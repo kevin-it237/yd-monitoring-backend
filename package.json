@@ -1,0 +1,33 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Civil Aviation data visualization",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "keywords": [
+    "data visualization"
+  ],
+  "author": "kevin-it",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "global": "^4.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20",
+    "morgan": "^1.9.1",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "sequelize": "^6.3.5",
+    "socket.io": "^4.0.0",
+    "uuid-v4": "^0.1.0"
+  }
+}
