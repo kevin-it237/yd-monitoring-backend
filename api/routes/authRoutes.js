@@ -11,20 +11,26 @@ var bcrypt = require("bcryptjs");
 router.post("/register", verifySignUp.checkDuplicateUsernameOrEmail, (req, res) => {
     // Save User to Database
     User.create({
-        username: req.body.username,
+        org_code: req.body.org_code,
         email: req.body.email,
+        position: req.body.position,
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
         role: req.body.role,
         short_name: req.body.short_name,
         password: bcrypt.hashSync(req.body.password, 8),
         orgId: req.body.orgId
     })
     .then(user => {
-        res.status(200).send({ 
+        res.status(201).send({ 
             id: user.id,
-            username: user.username,
+            org_code: user.org_code,
             email: user.email,
             role: user.role,
             short_name: user.short_name,
+            position: user.position,
+            first_name: user.first_name,
+            last_name: user.last_name,
             orgId: user.orgId,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
@@ -38,7 +44,7 @@ router.post("/register", verifySignUp.checkDuplicateUsernameOrEmail, (req, res) 
 router.post("/signin", (req, res) => {
     User.findOne({
         where: {
-            username: req.body.username
+            email: req.body.email
         }
     })
     .then(user => {
@@ -64,11 +70,14 @@ router.post("/signin", (req, res) => {
 
         res.status(200).send({
             id: user.id,
-            username: user.username,
+            org_code: user.org_code,
             email: user.email,
             role: user.role,
             short_name: user.short_name,
             orgId: user.orgId,
+            position: user.position,
+            first_name: user.first_name,
+            last_name: user.last_name,
             accessToken: token,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
@@ -83,16 +92,20 @@ router.put("/users", authJwt.verifyToken, (req, res) => {
     // Update User to Database
     User.update(
         { password: bcrypt.hashSync(req.body.password, 8) }, 
-        {  where : { username: req.body.username }}
+        {  where : { email: req.body.email }}
     )
     .then(user => {
         res.status(200).send({ 
             id: user.id,
-            username: user.username,
+            org_code: user.org_code,
             email: user.email,
             role: user.role,
             short_name: user.short_name,
             orgId: user.orgId,
+            position: user.position,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            accessToken: token,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
             message: "User was successfully updated!" });

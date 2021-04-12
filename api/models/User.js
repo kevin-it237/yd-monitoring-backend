@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const db = require('../models')
 
 const User = db.sequelize.define("user", {
-    username: {
+    org_code: {
         type: Sequelize.STRING
     },
     email: {
@@ -15,6 +15,15 @@ const User = db.sequelize.define("user", {
         type: Sequelize.STRING
     },
     short_name: {
+        type: Sequelize.STRING
+    },
+    first_name: {
+        type: Sequelize.STRING
+    },
+    last_name: {
+        type: Sequelize.STRING
+    },
+    position: {
         type: Sequelize.STRING
     },
     role: {
