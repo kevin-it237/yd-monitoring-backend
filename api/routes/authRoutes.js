@@ -4,6 +4,7 @@ const User = require('../models/User')
 const Sequelize = require('sequelize')
 const config = require('../../config/auth.config')
 const { authJwt } = require("../middleware");
+const sendMail = require('../helpers/sendmail')
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -22,6 +23,16 @@ router.post("/register", verifySignUp.checkDuplicateUsernameOrEmail, (req, res) 
         orgId: req.body.orgId
     })
     .then(user => {
+        sendMail(
+            'You are registered to the YD Monitoring System',
+            user.email,
+            `<h4>Your are successfully registered to the YD Monitoring system</h4>
+            <p>Your default password is: <b>${req.body.password}</b></p>
+            <p>Use your email and password to login.</p>`,
+            (err, info) => {
+                console.log(err);
+            }
+        )
         res.status(201).send({ 
             id: user.id,
             org_code: user.org_code,
