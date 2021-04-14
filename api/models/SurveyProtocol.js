@@ -32,7 +32,7 @@ const SurveyProtocol = db.sequelize.define("survey_protocol", {
 YDMS_KPIs.hasMany(SurveyProtocol);
 SurveyProtocol.belongsTo(YDMS_KPIs);
 
-// Provision.hasOne(SurveyProtocol, {foreignKey: 'provision_id'});
-// SurveyProtocol.belongsTo(Provision, {foreignKey: 'provision_id'});
+Provision.hasOne(SurveyProtocol, {foreignKey: 'provision_id'});
+SurveyProtocol.belongsTo(Provision, {foreignKey: 'provision_id'});
 
 module.exports = SurveyProtocol

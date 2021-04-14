@@ -49,14 +49,14 @@ router.get("/instruments", authJwt.verifyToken, (req, res, next) => {
 });
 
 // Get all instruments, articles, and provision
-router.get("/provision/:instId/:provisionNumber", authJwt.verifyToken, (req, res, next) => {
-    const provisionNumber = req.params.provisionNumber
+router.get("/provision/:instId/:provision_id", authJwt.verifyToken, (req, res, next) => {
+    const provision_id = req.params.provisionNumber
     const instId = req.params.instId
     
     Provision.findOne({
         where: {
-            provision_number: {
-                [Op.eq]: provisionNumber
+            provision_id: {
+                [Op.eq]: provision_id
             }
         },
         include: [
