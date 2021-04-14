@@ -50,7 +50,7 @@ router.get("/instruments", authJwt.verifyToken, (req, res, next) => {
 
 // Get all instruments, articles, and provision
 router.get("/provision/:instId/:provision_id", authJwt.verifyToken, (req, res, next) => {
-    const provision_id = req.params.provisionNumber
+    const provision_id = req.params.provision_id
     const instId = req.params.instId
     
     Provision.findOne({
