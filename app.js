@@ -85,7 +85,11 @@ app.use((error, req, res, next) => {
     })
 })
 
-const io = socketio(server)
+const io = socketio(server, {
+    cors: {
+      origin: '*',
+    }
+})
 
 let users = []
 
