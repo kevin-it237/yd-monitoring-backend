@@ -65,11 +65,11 @@ router.get("/provision/:instId/:provision_id", authJwt.verifyToken, (req, res, n
                 include: [
                     {
                         model: Instrument,
-                        where: {
-                            YDMS_Inst_id: {
-                                [Op.eq]: instId
-                            }
-                        }
+                        // where: {
+                        //     YDMS_Inst_id: {
+                        //         [Op.eq]: instId
+                        //     }
+                        // }
                     }
                 ]
             },
