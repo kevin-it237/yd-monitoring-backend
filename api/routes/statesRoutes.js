@@ -22,12 +22,6 @@ router.put("/:id", authJwt.verifyToken, (req, res, next) => {
     const stateId = req.params.id;
     const SAATM_membership = req.body.SAATM_membership
 
-    if(!SAATM_membership) {
-        return res.status(400).send({
-            message: "SAATM_membership field not found!"
-        });
-    }
-
     State.findOne({
         where: {
             YDMS_AU_id: stateId
