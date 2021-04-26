@@ -7,18 +7,18 @@ const { authJwt } = require("../middleware");
 // Save question response
 router.post("/", authJwt.verifyToken, (req, res, next) => {
     if (!req.body.YDMS_Org_id) {
-        return res.status(401).send({
+        return res.status(400).send({
             message: "YDMS_Org_id field not found!"
         });
     }
 
     if(!req.body.YDMS_SP_id) {
-        return res.status(401).send({
+        return res.status(400).send({
             message: "YDMS_SP_id field not found!"
         });
     }
     if(!req.body.response.toString().length) {
-        return res.status(401).send({
+        return res.status(400).send({
             message: "response field not found!"
         });
     }
@@ -37,22 +37,32 @@ router.post("/", authJwt.verifyToken, (req, res, next) => {
             organisationYDMSOrgId: req.body.YDMS_Org_id,
             surveyProtocolYDMSSPId: req.body.YDMS_SP_id
         }
-    }).then(resp => {
-        if (resp) {
-            res.status(400).send({
-                message: "This organisation has already anwsered this question!"
+    }).then(question => {
+        if (question) {
+            // Update the response
+            question.update({
+                questionnaire_response: req.body.response,
+            })
+            .then(response => {
+                return res.status(200).send({ 
+                    success: true,
+                    data: response,
+                    message: "Response updated successfully!" });
+            })
+            .catch(err => {
+                return res.status(500).send({ success: false, message: err.message });
             });
-            return;
         } else {
             // Save the response
             SPResponse.create(response)
             .then(response => {
-                res.status(200).send({ 
+                return res.status(200).send({ 
+                    success: true,
                     data: response,
                     message: "Response saved successfully!" });
             })
             .catch(err => {
-                res.status(500).send({ message: err.message });
+                return res.status(500).send({ success: false, message: err.message });
             });
         }
     });

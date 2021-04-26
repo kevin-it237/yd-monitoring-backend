@@ -2,7 +2,7 @@ const localDB = {
   HOST: "localhost",
   USER: "root",
   PASSWORD: "",
-  DB: "civil-aviation-db",
+  DB: "yd_test_db",
   dialect: "mysql",
   operatorsAliases: false,
   pool: {
