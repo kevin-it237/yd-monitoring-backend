@@ -98,7 +98,7 @@ router.get("/questions/:orgId", authJwt.verifyToken, (req, res, next) => {
         include: [
             {
                 model: SurveyProtocol,
-                attributes: ['YDMS_SP_id', 'ydmsKpiYDMSKPIsId', 'questionnaire_text', 'YDMS_Inst_id', 'provision_id'],
+                attributes: ['YDMS_SP_id', 'ydmsKpiYDMSKPIsId', 'questionnaire_text', 'YDMS_Inst_id', 'provision_id', 'weight'],
             }
         ],
     }).then(responses => {
