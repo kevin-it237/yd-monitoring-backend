@@ -1,6 +1,8 @@
 var router = require("express").Router();
 const { verifySignUp } = require("../middleware");
 const User = require('../models/User')
+const State = require('../models/State')
+const Address = require('../models/Address')
 const Sequelize = require('sequelize')
 const config = require('../../config/auth.config')
 const { authJwt } = require("../middleware");
@@ -79,7 +81,7 @@ router.post("/signin", (req, res) => {
             expiresIn: 86400*365 // one year
         });
 
-        res.status(200).send({
+        const loggedUser = {
             id: user.id,
             org_code: user.org_code,
             email: user.email,
@@ -92,7 +94,27 @@ router.post("/signin", (req, res) => {
             accessToken: token,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
-        });
+        }
+
+        if(user.role === 'state') {
+            State.findOne({
+                where: {
+                    YDMS_AU_id: user.orgId
+                },
+                include: [
+                    {
+                        model: Address,
+                    },
+                ],
+            }).then(state => {
+                return res.status(200).send({
+                    ...loggedUser,
+                    state
+                });
+            }); 
+        } else {
+            return res.status(200).send(loggedUser);
+        }
     })
     .catch(err => {
         res.status(500).send({ message: err.message });

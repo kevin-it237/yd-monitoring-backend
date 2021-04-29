@@ -1,10 +1,17 @@
 var router = require("express").Router();
 const State = require('../models/State')
+const Address = require('../models/Address')
 const { authJwt } = require("../middleware");
 
 // Get all states
 router.get("/", authJwt.verifyToken, (req, res, next) => {
-    State.getAllStates()
+    State.getAllStates({
+        include: [
+            {
+                model: Address,
+            },
+        ],
+    })
     .then(data => {
         res.status(200).send(data);
     })

@@ -2,6 +2,8 @@ const Sequelize = require("sequelize");
 const db = require('../models')
 const sequelize = db.sequelize
 
+const Address = require('./Address');
+
 class State extends Sequelize.Model {
 
     static getAllStates() {
@@ -40,8 +42,23 @@ State.init({
     ICAO_code: {
         type: Sequelize.STRING
     },
+    focal_person: {
+        type: Sequelize.STRING
+    },
+    caa_name: {
+        type: Sequelize.STRING
+    },
+    head_quarter: {
+        type: Sequelize.STRING
+    },
+    focal_person_email: {
+        type: Sequelize.STRING
+    },
 }, 
 { sequelize,
     modelName: 'states' });
+
+State.belongsTo(Address, {foreignKey: 'CAA_address'})
+Address.hasOne(State, {foreignKey: 'CAA_address'});
 
 module.exports = State
