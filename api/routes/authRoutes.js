@@ -126,9 +126,9 @@ router.post("/signin", (req, res) => {
     });
 });
 
-router.get("/profile/:userId", authJwt.verifyToken, (req, res) => {
+router.get("/profile", authJwt.verifyToken, (req, res) => {
     
-    const userId = req.params.userId;
+    const userId = req.userId;
     
     User.findOne({
         where: {
