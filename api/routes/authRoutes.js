@@ -78,7 +78,7 @@ router.post("/signin", (req, res) => {
         }
 
         var token = jwt.sign({ id: user.id, role: user.role }, config.secret, {
-            expiresIn: 86400*365 // one year
+            expiresIn: 86400*1 // 24 hours
         });
 
         const loggedUser = {
@@ -120,6 +120,59 @@ router.post("/signin", (req, res) => {
         res.status(500).send({ message: err.message });
     });
 });
+
+router.get("/profile/:userId", authJwt.verifyToken, (req, res) => {
+    
+    const userId = req.params.userId;
+    
+    User.findOne({
+        where: {
+            id: userId
+        }
+    })
+    .then(user => {
+        if (!user) {
+            return res.status(404).send({ message: "User Not found." });
+        }
+
+        const loggedUser = {
+            id: user.id,
+            org_code: user.org_code,
+            email: user.email,
+            role: user.role,
+            short_name: user.short_name,
+            orgId: user.orgId,
+            position: user.position,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+        }
+
+        if(user.role === 'state') {
+            State.findOne({
+                where: {
+                    YDMS_AU_id: user.orgId
+                },
+                include: [
+                    {
+                        model: Address,
+                    },
+                ],
+            }).then(state => {
+                return res.status(200).send({
+                    ...loggedUser,
+                    state
+                });
+            }); 
+        } else {
+            return res.status(200).send(loggedUser);
+        }
+    })
+    .catch(err => {console.log(err)
+        res.status(500).send({ message: err.message });
+    });
+})
 
 router.put("/users", authJwt.verifyToken, (req, res) => {
     // Update User to Database
