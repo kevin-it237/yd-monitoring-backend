@@ -107,6 +107,20 @@ router.post("/signin", (req, res) => {
                     },
                 ],
             }).then(state => {
+                // Send email to focal person
+                if(state.focal_person_email) {
+                    sendMail(
+                        '<User Login Notification>',
+                        state.focal_person_email,
+                        `<p>This email is to notify you that <b>${user.first_name} ${user.last_name}</b> log into the YD Monitoring System.</p>
+                        <p>Email: ${user.email}</p>
+                        <p>Position: ${user.position}</p>
+                        <p>Date: ${new Date()}</p>`,
+                        (err, info) => {
+                            console.log(err);
+                        }
+                    )
+                }
                 return res.status(200).send({
                     ...loggedUser,
                     state
