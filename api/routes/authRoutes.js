@@ -37,16 +37,7 @@ router.post("/register", verifySignUp.checkDuplicateUsernameOrEmail, (req, res) 
         )
         res.status(201).send({ 
             id: user.id,
-            org_code: user.org_code,
-            email: user.email,
-            role: user.role,
-            short_name: user.short_name,
-            position: user.position,
-            first_name: user.first_name,
-            last_name: user.last_name,
             orgId: user.orgId,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
             message: "User was registered successfully!" });
     })
     .catch(err => {
