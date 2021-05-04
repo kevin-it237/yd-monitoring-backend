@@ -4,6 +4,7 @@ const Multer = require('multer');
 const {Storage} = require('@google-cloud/storage');
 const uploadImageToStorage = require('../helpers/uploadImageToStorage');
 const Document = require('./../models/Documents')
+const { authJwt } = require("../middleware");
 
 const storage = new Storage({
     projectId: "yd-monitoring-system",
@@ -77,5 +78,26 @@ router.post('/', multer.any(), (req, res, next) => {
     });
 
 })
+
+// Get documents by states
+router.get("/states/:orgId", authJwt.verifyToken, (req, res, next) => {
+    Document.findAll({
+        where: {
+            orgId: req.params.orgId
+        }
+    })
+    .then(data => {
+        res.status(200).send({
+            success: true,
+            data: data
+        });
+    })
+    .catch(err => {
+        res.status(500).send({
+          message:
+            err.message
+        });
+    });
+});
 
 module.exports = router;
