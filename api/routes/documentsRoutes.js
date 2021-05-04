@@ -21,12 +21,12 @@ const multer = Multer({
 });
 
 // Survey creation
-router.post('/', multer.any(), (req, res, next) => {
+router.post('/', authJwt.verifyToken, multer.any(), (req, res, next) => {
     var promises = [];
 
     const title = req.body.title;
     const description = req.body.description;
-    const orgId = req.orgid;
+    const orgId = req.body.orgid;
 
     if(!title) {
         return res.status(400).send({
@@ -68,7 +68,7 @@ router.post('/', multer.any(), (req, res, next) => {
             res.status(201).json({
                 success: true,
                 message: 'Document uploaded successfully',
-                document: doc
+                data: doc
             });
         })
         .catch(err => {

@@ -11,7 +11,7 @@ const Document = db.sequelize.define("document", {
         type: Sequelize.STRING
     },
     description: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
     },
     files: {
         type: Sequelize.TEXT
