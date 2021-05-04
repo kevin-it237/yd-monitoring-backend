@@ -5,6 +5,7 @@ const Address = db.sequelize.define("address", {
     address_id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
     },
     city: {
         type: Sequelize.STRING
