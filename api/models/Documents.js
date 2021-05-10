@@ -18,7 +18,10 @@ const Document = db.sequelize.define("document", {
     },
     orgId: {
         type: Sequelize.INTEGER
-    }
+    },
+    kpiId: {
+        type: Sequelize.STRING
+    },
 });
 
 module.exports = Document

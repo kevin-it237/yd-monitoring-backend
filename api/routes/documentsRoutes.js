@@ -26,12 +26,20 @@ router.post('/', authJwt.verifyToken, multer.any(), (req, res, next) => {
 
     const title = req.body.title;
     const description = req.body.description;
+    const kpiId = req.body.kpiId;
     const orgId = req.body.orgid;
 
     if(!title) {
         return res.status(400).send({
             success: false,
             message: 'Title is required'
+        })
+    }
+
+    if(!kpiId) {
+        return res.status(400).send({
+            success: false,
+            message: 'kpiId is required'
         })
     }
 
@@ -61,6 +69,7 @@ router.post('/', authJwt.verifyToken, multer.any(), (req, res, next) => {
             title: title,
             description: description,
             orgId: orgId,
+            kpiId: kpiId,
             files: filelists
         }
         Document.create(document)
