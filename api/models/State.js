@@ -51,7 +51,13 @@ State.init({
     head_quarter: {
         type: Sequelize.STRING
     },
+    focal_person_position: {
+        type: Sequelize.STRING
+    },
     focal_person_email: {
+        type: Sequelize.STRING
+    },
+    focal_person_phone: {
         type: Sequelize.STRING
     },
 }, 
