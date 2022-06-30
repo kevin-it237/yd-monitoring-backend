@@ -54,6 +54,7 @@ const usersRoutes = require('./api/routes/usersRoutes');
 const eLibraryRoutes = require('./api/routes/eLibraryRoutes');
 const commentsRoutes = require('./api/routes/commentsRoutes');
 const documentsRoutes = require('./api/routes/documentsRoutes');
+const reportRoutes = require('./api/routes/reportRoutes');
 
 /* App Routes */
 app.use('/api/auth', authRoutes);
@@ -66,6 +67,7 @@ app.use('/api/users', usersRoutes);
 app.use('/api/libraries', eLibraryRoutes);
 app.use('/api/comments', commentsRoutes);
 app.use('/api/documents', documentsRoutes);
+app.use('/api/reports', reportRoutes);
 
 app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
