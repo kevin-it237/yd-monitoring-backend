@@ -10,7 +10,7 @@ module.exports = function (subject, email, html, cb) {
         secure: false, // true for 465, false for other ports
         auth: {
             user: "iemservices2021@gmail.com", // iemservices2021@gmail.com
-            pass: "iems2021" // iems2021
+            pass: "wcqwtijslisubdnn" // iems2021
         },
         tls: {
             rejectUnauthorised: false
