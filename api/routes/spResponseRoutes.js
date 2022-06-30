@@ -27,7 +27,8 @@ router.post("/", authJwt.verifyToken, (req, res, next) => {
         organisationYDMSOrgId: req.body.YDMS_Org_id,
         surveyProtocolYDMSSPId: req.body.YDMS_SP_id,
         questionnaire_response: req.body.response,
-        weight_response: req.body.weight ? req.body.weight : 0,
+        weight_response: req.body.weight ? parseFloat(req.body.weight || "1") : 0,
+        // weight_response: 0,
         kpi_id: req.body.kpi
     }
 
