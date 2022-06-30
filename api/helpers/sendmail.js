@@ -1,7 +1,10 @@
+const smtpTransport = require('nodemailer-smtp-transport');
+
 module.exports = function (subject, email, html, cb) {
     const nodemailer = require('nodemailer');
 
-    let transporter = nodemailer.createTransport({
+    let transporter = nodemailer.createTransport(smtpTransport({
+        host: 'smtp.gmail.com',
         service: 'gmail',
         port: 587,
         secure: false, // true for 465, false for other ports
@@ -12,7 +15,7 @@ module.exports = function (subject, email, html, cb) {
         tls: {
             rejectUnauthorised: false
         }
-    });
+    }));
 
     let mailOptions = {
         from: '"YD Monitoring System " <admin@ydmonitoringsystem.com>', // sender address
