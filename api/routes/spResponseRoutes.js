@@ -69,6 +69,93 @@ router.post("/", authJwt.verifyToken, (req, res, next) => {
     });
 });
 
+// Bulk Save question response
+router.post("/bulk", authJwt.verifyToken, async(req, res, next) => {
+    let responses = req.body.responses;
+    if(!responses) {
+        return res.status(400).send({
+            message: "Response array not found"
+        });
+    }
+
+    const responsesToSave = [];
+    let _error = null;
+
+    responses.forEach(response => {
+        if (!response.YDMS_Org_id) {
+            return res.status(400).send({
+                message: "YDMS_Org_id field not found!"
+            });
+        }
+        if (!response.YDMS_Org_id) {
+            return res.status(400).send({
+                message: "YDMS_Org_id field not found!"
+            });
+        }
+    
+        if(!response.YDMS_SP_id) {
+            return res.status(400).send({
+                message: "YDMS_SP_id field not found!"
+            });
+        }
+        if(!response.response.toString().length) {
+            return res.status(400).send({
+                message: "response field not found!"
+            });
+        }
+
+        responsesToSave.push({
+            organisationYDMSOrgId: response.YDMS_Org_id,
+            surveyProtocolYDMSSPId: response.YDMS_SP_id,
+            questionnaire_response: response.response,
+            weight_response: response.weight ? parseFloat(response.weight || "1") : 0,
+            kpi_id: response.kpi
+        })
+    });
+
+    const saveResponseItem = async (_response) => {
+        // Check if question is already anwsered
+        try {
+            const responseExist = await SPResponse.findOne({
+                where: {
+                    organisationYDMSOrgId: _response.organisationYDMSOrgId,
+                    surveyProtocolYDMSSPId: _response.surveyProtocolYDMSSPId
+                }
+            });
+
+            if (responseExist) {
+                // Update the response
+                await responseExist.update({
+                    questionnaire_response: _response.questionnaire_response,
+                });
+            } else {
+                // Save the response
+                await SPResponse.create(_response)
+            }
+        } catch (error) {
+            _error = error.message;
+        }
+    };
+
+    const promises = [];
+    for (let index = 0; index < responsesToSave.length; index++) {
+        promises.push(await saveResponseItem(responsesToSave[index]));
+    }
+
+    const result = await Promise.all(promises);
+
+    if(_error) {
+        return res.status(500).send({ success: false, message: _error });
+    } else {
+        return res.status(201).send({ 
+            success: true,
+            data: {},
+            message: "Responses updated successfully!" 
+        });
+    }
+});
+
+
 // Questions anwsered by an org
 router.get("/:orgId", authJwt.verifyToken, (req, res, next) => {
 
