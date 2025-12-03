@@ -1,3 +1,3 @@
 module.exports = {
-    secret: "civil-aviation-secret-key"
+    secret: process.env.JWT_SECRET || "change-me-in-production"
 };
