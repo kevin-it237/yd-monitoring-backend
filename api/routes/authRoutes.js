@@ -1,4 +1,5 @@
 var router = require("express").Router();
+const crypto = require('crypto');
 const { verifySignUp } = require("../middleware");
 const User = require('../models/User')
 const State = require('../models/State')
@@ -11,7 +12,38 @@ const sendMail = require('../helpers/sendmail')
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
+/**
+ * Generate a secure random password
+ * @param {number} length - Password length (default: 12)
+ * @returns {string} - Random password
+ */
+function generateSecurePassword(length = 12) {
+    const uppercase = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    const lowercase = 'abcdefghjkmnpqrstuvwxyz';
+    const numbers = '23456789';
+    const symbols = '!@#$%&*';
+    const allChars = uppercase + lowercase + numbers + symbols;
+
+    let password = '';
+    // Ensure at least one of each type
+    password += uppercase[crypto.randomInt(uppercase.length)];
+    password += lowercase[crypto.randomInt(lowercase.length)];
+    password += numbers[crypto.randomInt(numbers.length)];
+    password += symbols[crypto.randomInt(symbols.length)];
+
+    // Fill the rest randomly
+    for (let i = password.length; i < length; i++) {
+        password += allChars[crypto.randomInt(allChars.length)];
+    }
+
+    // Shuffle the password
+    return password.split('').sort(() => crypto.randomInt(3) - 1).join('');
+}
+
 router.post("/register", verifySignUp.checkDuplicateUsernameOrEmail, (req, res) => {
+    // Generate secure random password on the server
+    const generatedPassword = generateSecurePassword(12);
+
     // Save User to Database
     User.create({
         org_code: req.body.org_code,
@@ -21,21 +53,22 @@ router.post("/register", verifySignUp.checkDuplicateUsernameOrEmail, (req, res) 
         last_name: req.body.last_name,
         role: req.body.role,
         short_name: req.body.short_name,
-        password: bcrypt.hashSync(req.body.password, 8),
+        password: bcrypt.hashSync(generatedPassword, 8),
         orgId: req.body.orgId
     })
     .then(user => {
         sendMail(
             'You are registered to the YD Monitoring System',
             user.email,
-            `<h4>Your are successfully registered to the YD Monitoring system</h4>
-            <p>Your default password is: <b>${req.body.password}</b></p>
-            <p>Use your email and password to login.</p>`,
+            `<h4>You are successfully registered to the YD Monitoring system</h4>
+            <p>Your password is: <b>${generatedPassword}</b></p>
+            <p>Use your email and this password to login.</p>
+            <p>We recommend changing your password after your first login.</p>`,
             (err, info) => {
                 console.log(err);
             }
         )
-        res.status(201).send({ 
+        res.status(201).send({
             id: user.id,
             orgId: user.orgId,
             message: "User was registered successfully!" });
