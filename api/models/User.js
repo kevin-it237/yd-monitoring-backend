@@ -40,6 +40,11 @@ const User = db.sequelize.define("user", {
         onUpdate: Sequelize.NOW,
         field: 'updated_at'
     },
+}, {
+    indexes: [
+        { name: 'idx_user_email', fields: ['email'] },
+        { name: 'idx_user_org_id', fields: ['orgId'] },
+    ]
 });
 
 module.exports = User

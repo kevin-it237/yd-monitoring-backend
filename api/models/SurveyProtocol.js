@@ -27,6 +27,10 @@ const SurveyProtocol = db.sequelize.define("survey_protocol", {
     provision_id: {
         type: Sequelize.STRING
     },
+}, {
+    indexes: [
+        { name: 'idx_sp_kpi_id', fields: ['ydmsKpiYDMSKPIsId'] },
+    ]
 });
 
 YDMS_KPIs.hasMany(SurveyProtocol);

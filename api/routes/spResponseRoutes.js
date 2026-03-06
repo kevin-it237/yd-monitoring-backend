@@ -79,7 +79,7 @@ router.post("/bulk", authJwt.verifyToken, async(req, res, next) => {
     }
 
     const responsesToSave = [];
-    let _error = null;
+    let _error = null; // captures first batch error
 
     responses.forEach(response => {
         if (!response.YDMS_Org_id) {
@@ -114,35 +114,32 @@ router.post("/bulk", authJwt.verifyToken, async(req, res, next) => {
     });
 
     const saveResponseItem = async (_response) => {
-        // Check if question is already anwsered
-        try {
-            const responseExist = await SPResponse.findOne({
-                where: {
-                    organisationYDMSOrgId: _response.organisationYDMSOrgId,
-                    surveyProtocolYDMSSPId: _response.surveyProtocolYDMSSPId
-                }
-            });
-
-            if (responseExist) {
-                // Update the response
-                await responseExist.update({
-                    questionnaire_response: _response.questionnaire_response,
-                });
-            } else {
-                // Save the response
-                await SPResponse.create(_response)
+        const responseExist = await SPResponse.findOne({
+            where: {
+                organisationYDMSOrgId: _response.organisationYDMSOrgId,
+                surveyProtocolYDMSSPId: _response.surveyProtocolYDMSSPId
             }
-        } catch (error) {
-            _error = error.message;
+        });
+
+        if (responseExist) {
+            await responseExist.update({
+                questionnaire_response: _response.questionnaire_response,
+            });
+        } else {
+            await SPResponse.create(_response);
         }
     };
 
-    const promises = [];
-    for (let index = 0; index < responsesToSave.length; index++) {
-        promises.push(await saveResponseItem(responsesToSave[index]));
+    // Process in batches matching the DB connection pool size to avoid exhausting connections
+    const BATCH_SIZE = 5;
+    try {
+        for (let i = 0; i < responsesToSave.length; i += BATCH_SIZE) {
+            const batch = responsesToSave.slice(i, i + BATCH_SIZE);
+            await Promise.all(batch.map(saveResponseItem));
+        }
+    } catch (error) {
+        _error = error.message;
     }
-
-    const result = await Promise.all(promises);
 
     if(_error) {
         return res.status(500).send({ success: false, message: _error });
